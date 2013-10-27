@@ -60,7 +60,7 @@ PageStatic pageStatic = new PageStaticBuilder(
 	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.3:/app/pagestatic3/")
 	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.4:/app/pagestatic4/")
 
-     // optinal
+     // optional
     .httpSocketTimeoutSeconds(60) // default 30 seconds
     .triggerUploadWhenMaxFiles(100) // default 100
     .triggerUploadWhenMaxSeconds(60) // default 120
@@ -84,7 +84,7 @@ addRsyncRemote(10.142.151.2, mall)
 addRsyncRemote(10.142.151.3, mall)
 addRsyncRemote(10.142.151.4, mall)
 addRsyncDir(/home/mall/pagestatic/pagehtml/, /app/pagestatic/)
-// optinal
+// optional
 httpSocketTimeoutSeconds(60) // default 30 seconds
 triggerUploadWhenMaxFiles(100) // default 100
 triggerUploadWhenMaxSeconds(60) // default 120
