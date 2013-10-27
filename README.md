@@ -1,7 +1,7 @@
 PageStatic
 ==========
 
-Retrieve remote web page content and [rsync](http://coolshell.cn/articles/7425.html) to multiple hosts.
+A java utility program to retrieve content of remote web page and [rsync](http://coolshell.cn/articles/7425.html) to multiple hosts.
 
 + when given page url links, PageStatic will reuse http connections by HttpClient.
 + the rsync upload will triggered automatically by the content file max num or timeout.
