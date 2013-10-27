@@ -1,14 +1,28 @@
 PageStatic
 ==========
 
-Retrieve remote web page content and rsync to multiple hosts.
+Retrieve remote web page content and [rsync](http://coolshell.cn/articles/7425.html) to multiple hosts.
 
 + when given page url links, PageStatic will reuse http connections by HttpClient.
 + the rsync upload will triggered automatically by the content file max num or timeout.
 + rsync will be checked on timeout and exit-value to ensure its success.
-+ all remote hosts will requried password-less to use rsync (rsync -az localdir user@remotehost:remotedir).
++ all remote hosts will required password-less to use rsync (rsync -az localdir user@remotehost:remotedir).
 + because of PageStatic's own concurrency, only one PageStatic instance is enough.
 
+## How to make [rsync-over-ssh-without-password](http://www.thegeekstuff.com/2011/07/rsync-over-ssh-without-password/)
+
+1. generate key on the PageStatic running host
+```
+user1@10.142.195.61 $ssh-keygen
+```
+2. copy the key to the remotes
+```
+user1@10.142.195.61 $ssh-copy-id -i ~/.ssh/id_rsa.pub user2@10.142.195.62
+```
+3. check whether it is ssh ok without password
+```
+ssh user2@10.142.195.62
+```
 
 ## Create PageStatic by program with same upload path on remote hosts
 
