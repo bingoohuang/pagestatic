@@ -12,16 +12,41 @@ Retrieve remote web page content and rsync to multiple hosts.
 
 ## Create PageStatic by program with same upload path on remote hosts
 
-```
+```java
 PageStatic pageStatic = new PageStaticBuilder()
-    	    .addRsyncRemote("10.142.151.1", "mall")	.addRsyncRemote("10.142.151.2", "mall")	.addRsyncRemote("10.142.151.3", "mall")	.addRsyncRemote("10.142.151.4", "mall")	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "/app/pagestatic/")		 // optinal	.httpSocketTimeoutSeconds(60) // default 30 seconds	.triggerUploadWhenMaxFiles(100) // default 100	.triggerUploadWhenMaxSeconds(60) // default 120	.deleteLocalDirAfterRsync(true)  // default true	.maxUrlContentGeneratingThreads(10) // default 1	.rsyncTimeoutSeconds(60) // default 30 seconds	.rsyncRetryTimes(3) // default 3		.build();
+    	
+    .addRsyncRemote("10.142.151.1", "mall")
+	.addRsyncRemote("10.142.151.2", "mall")
+	.addRsyncRemote("10.142.151.3", "mall")
+	.addRsyncRemote("10.142.151.4", "mall")
+	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "/app/pagestatic/")
+	
+	 // optinal
+	.httpSocketTimeoutSeconds(60) // default 30 seconds
+	.triggerUploadWhenMaxFiles(100) // default 100
+	.triggerUploadWhenMaxSeconds(60) // default 120
+	.deleteLocalDirAfterRsync(true)  // default true
+	.maxUrlContentGeneratingThreads(10) // default 1
+	.rsyncTimeoutSeconds(60) // default 30 seconds
+	.rsyncRetryTimes(3) // default 3
+	
+	.build();
 ```
 ## Create PageStatic by program with diffrent upload path on remote hosts
 
-```
+```java
 PageStatic pageStatic = new PageStaticBuilder(
-		.addRsyncRemote("10.142.151.1", "mall")	.addRsyncRemote("10.142.151.2", "mall")	.addRsyncRemote("10.142.151.3", "mall")	.addRsyncRemote("10.142.151.4", "mall")	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.1:/app/pagestatic1/")	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.2:/app/pagestatic2/")	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.3:/app/pagestatic3/")	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.4:/app/pagestatic4/")
-     // optinal
+	
+	.addRsyncRemote("10.142.151.1", "mall")
+	.addRsyncRemote("10.142.151.2", "mall")
+	.addRsyncRemote("10.142.151.3", "mall")
+	.addRsyncRemote("10.142.151.4", "mall")
+	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.1:/app/pagestatic1/")
+	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.2:/app/pagestatic2/")
+	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.3:/app/pagestatic3/")
+	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.4:/app/pagestatic4/")
+
+     // optinal
     .httpSocketTimeoutSeconds(60) // default 30 seconds
     .triggerUploadWhenMaxFiles(100) // default 100
     .triggerUploadWhenMaxSeconds(60) // default 120
@@ -29,7 +54,8 @@ PageStatic pageStatic = new PageStaticBuilder(
     .maxUrlContentGeneratingThreads(10) // default 1
     .rsyncTimeoutSeconds(60) // default 30 seconds
     .rsyncRetryTimes(3) // default 3
-	.build();
+
+	.build();
 ```
 
 ## Create PageStatic by config with same upload path on remote hosts 
@@ -38,8 +64,13 @@ The config is based on [diamond-client](https://github.com/bingoohuang/diamond-m
 Set the group to **PageStatic** and dataid to **Demo**
 
 
-```
-addRsyncRemote(10.142.151.1, mall)addRsyncRemote(10.142.151.2, mall)addRsyncRemote(10.142.151.3, mall)addRsyncRemote(10.142.151.4, mall)addRsyncDir(/home/mall/pagestatic/pagehtml/, /app/pagestatic/)// optinal
+```java
+addRsyncRemote(10.142.151.1, mall)
+addRsyncRemote(10.142.151.2, mall)
+addRsyncRemote(10.142.151.3, mall)
+addRsyncRemote(10.142.151.4, mall)
+addRsyncDir(/home/mall/pagestatic/pagehtml/, /app/pagestatic/)
+// optinal
 httpSocketTimeoutSeconds(60) // default 30 seconds
 triggerUploadWhenMaxFiles(100) // default 100
 triggerUploadWhenMaxSeconds(60) // default 120
@@ -51,12 +82,25 @@ rsyncRetryTimes(3) // default 3
 
 And then build PageStatic from config like:
 
-```
+```java
 PageStatic pageStatic 	= new PageStaticBuilder().fromSpec("DEMO").build();		
 ```
 
 
 ## Use PageStatic
 
-```pageStatic.startupBatch();// batch processfor (…) { 	…	// use web url, and local responding file name	pageStatic.urlStaticAndUpload(url, localFile);	// or given the direct content and upload	String content = "<html>I am static html</html>";	pageStatic.directContentUpload(content, localFile);}pageStatic.finishBatch();
+```java
+pageStatic.startupBatch();
+
+// batch process
+for (…) {
+ 	…
+	// use web url, and local responding file name
+	pageStatic.urlStaticAndUpload(url, localFile);
+	// or given the direct content and upload
+	String content = "<html>I am static html</html>";
+	pageStatic.directContentUpload(content, localFile);
+}
+
+pageStatic.finishBatch();
 ```
