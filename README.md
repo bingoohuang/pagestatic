@@ -9,7 +9,7 @@ Retrieve remote web page content and [rsync](http://coolshell.cn/articles/7425.h
 + all remote hosts will required password-less to use rsync (rsync -az localdir user@remotehost:remotedir).
 + because of PageStatic's own concurrency, only one PageStatic instance is enough.
 
-## How to make [rsync-over-ssh-without-password](http://www.thegeekstuff.com/2011/07/rsync-over-ssh-without-password/)
+# How to make [rsync-over-ssh-without-password](http://www.thegeekstuff.com/2011/07/rsync-over-ssh-without-password/)
 
 1. generate key on the PageStatic running host
 ```
@@ -24,18 +24,17 @@ user1@10.142.195.61 $ssh-copy-id -i ~/.ssh/id_rsa.pub user2@10.142.195.62
 ssh user2@10.142.195.62
 ```
 
-## Create PageStatic by program with same upload path on remote hosts
+# Create PageStatic with same upload path
 
 ```java
 PageStatic pageStatic = new PageStaticBuilder()
-    	
     .addRsyncRemote("10.142.151.1", "mall")
 	.addRsyncRemote("10.142.151.2", "mall")
 	.addRsyncRemote("10.142.151.3", "mall")
 	.addRsyncRemote("10.142.151.4", "mall")
 	.addRsyncDir("/home/mall/pagestatic/pagehtml/", "/app/pagestatic/")
 	
-	 // optinal
+	 // optional
 	.httpSocketTimeoutSeconds(60) // default 30 seconds
 	.triggerUploadWhenMaxFiles(100) // default 100
 	.triggerUploadWhenMaxSeconds(60) // default 120
@@ -46,11 +45,10 @@ PageStatic pageStatic = new PageStaticBuilder()
 	
 	.build();
 ```
-## Create PageStatic by program with diffrent upload path on remote hosts
+# Create PageStatic with different upload path
 
 ```java
 PageStatic pageStatic = new PageStaticBuilder(
-	
 	.addRsyncRemote("10.142.151.1", "mall")
 	.addRsyncRemote("10.142.151.2", "mall")
 	.addRsyncRemote("10.142.151.3", "mall")
@@ -69,10 +67,10 @@ PageStatic pageStatic = new PageStaticBuilder(
     .rsyncTimeoutSeconds(60) // default 30 seconds
     .rsyncRetryTimes(3) // default 3
 
-	.build();
+    .build();
 ```
 
-## Create PageStatic by config with same upload path on remote hosts 
+# Create PageStatic by config
 
 The config is based on [diamond-client](https://github.com/bingoohuang/diamond-miner).
 Set the group to **PageStatic** and dataid to **Demo**
@@ -101,7 +99,7 @@ PageStatic pageStatic 	= new PageStaticBuilder().fromSpec("DEMO").build();
 ```
 
 
-## Use PageStatic
+# Use PageStatic
 
 ```java
 pageStatic.startupBatch();
