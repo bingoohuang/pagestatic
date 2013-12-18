@@ -11,10 +11,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.n3r.diamond</groupId>
-            <artifactId>diamond-client</artifactId>
-            <version>0.0.1</version>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.n3r.diamond</groupId>-->
+            <!--<artifactId>diamond-client</artifactId>-->
+            <!--<version>0.0.1</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>joor</artifactId>

@@ -17,14 +17,14 @@ import static org.apache.commons.lang3.StringUtils.*;
  * @author Bingoo
  */
 public class PageStaticSpecParser {
-    private String specName;
+    private String config;
 
-    public PageStaticSpecParser(String specName) {
-        this.specName = specName;
+    public PageStaticSpecParser(String config) {
+        this.config = config;
     }
 
     public void parse(PageStaticBuilder pageStaticBuilder) {
-        Configable config = new PageStaticConfig(specName);
+        Configable config = new PageStaticConfig(this.config);
 
         parseRsyncRemote(pageStaticBuilder, config);
         parseRsyncDir(pageStaticBuilder, config);

@@ -70,10 +70,7 @@ PageStatic pageStatic = new PageStaticBuilder(
     .build();
 ```
 
-# Create PageStatic by config
-
-The config is based on [diamond-client](https://github.com/bingoohuang/diamond-miner).
-Set the group to **PageStatic** and dataid to **Demo**
+# Create PageStatic by config file
 
 
 ```java
@@ -95,7 +92,7 @@ rsyncRetryTimes(3) // default 3
 And then build PageStatic from config like:
 
 ```java
-PageStatic pageStatic 	= new PageStaticBuilder().fromSpec("DEMO").build();		
+PageStatic pageStatic 	= new PageStaticBuilder().fromSpec("DEMO").build();
 ```
 
 

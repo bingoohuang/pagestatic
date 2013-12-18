@@ -5,11 +5,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Objects;
+import com.google.common.io.Resources;
+import com.google.common.reflect.ClassPath;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.n3r.biz.pagestatic.bean.Page;
@@ -139,5 +144,30 @@ public class PageStaticUtils {
     private static final String os = System.getProperty("os.name").toLowerCase();
     public static boolean isWindowsOS() {
         return os.indexOf("windows") != -1 || os.indexOf("nt") != -1;
+    }
+
+    /**
+     * Return the context classloader. BL: if this is command line operation, the classloading issues are more sane.
+     * During servlet execution, we explicitly set the ClassLoader.
+     *
+     * @return The context classloader.
+     */
+    public static ClassLoader getClassLoader() {
+        return Objects.firstNonNull(
+                Thread.currentThread().getContextClassLoader(),
+                PageStaticUtils.class.getClassLoader());
+    }
+
+    public static String classResourceToString(String classPath) {
+        URL url = getClassLoader().getResource(classPath);
+        if (url == null) return null;
+
+        try {
+            return Resources.toString(url, Charsets.UTF_8);
+        } catch (IOException e) {
+
+        }
+
+        return null;
     }
 }

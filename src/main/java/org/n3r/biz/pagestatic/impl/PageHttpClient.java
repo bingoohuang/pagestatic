@@ -1,10 +1,6 @@
 package org.n3r.biz.pagestatic.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
@@ -18,13 +14,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.n3r.biz.pagestatic.base.HttpClientCompleteListener;
 import org.n3r.biz.pagestatic.base.HttpClientSyncCompleteListener;
 import org.n3r.biz.pagestatic.util.PageStaticUtils;
-import org.n3r.core.lang.SameThreadExecutorService;
 import org.slf4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 根据页面URL，抓取页面内容。
- * @author Bingoo
  *
+ * @author Bingoo
  */
 public class PageHttpClient {
     private Logger log;
@@ -66,7 +66,7 @@ public class PageHttpClient {
         if (httpClientCompleteListener != null) {
             syncExecutor = httpClientCompleteListener instanceof HttpClientSyncCompleteListener
                     ? Executors.newSingleThreadExecutor()
-                    : new SameThreadExecutorService();
+                    : MoreExecutors.sameThreadExecutor();
         }
     }
 
@@ -121,7 +121,7 @@ public class PageHttpClient {
     }
 
     private boolean callListener(final Object[] callbackParams, final Exception ex,
-            final int statusCode, final double costsMillis) {
+                                 final int statusCode, final double costsMillis) {
         Exception exp = ex;
         try {
             if (syncExecutor != null) {

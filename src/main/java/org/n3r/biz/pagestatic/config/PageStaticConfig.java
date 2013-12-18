@@ -4,7 +4,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
-import org.n3r.diamond.client.DiamondMiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +17,7 @@ public class PageStaticConfig implements Configable {
     private Logger log = LoggerFactory.getLogger(PageStaticConfig.class);
     private HashMap<String, Object> properties = Maps.newHashMap();
 
-    public PageStaticConfig(String specName) {
-        String pageStaticSpec = DiamondMiner.getStone("PageStatic", specName);
+    public PageStaticConfig(String pageStaticSpec) {
         if (StringUtils.isEmpty(pageStaticSpec)) return;
 
         Iterable<String> lines = Splitter.on('\n').trimResults().omitEmptyStrings()

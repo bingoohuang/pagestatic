@@ -1,33 +1,35 @@
 package org.n3r.biz.pagestatic;
 
-import java.io.File;
-import java.security.SecureRandom;
-
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.biz.pagestatic.base.RsyncCompleteListener;
 import org.n3r.biz.pagestatic.util.PageStaticUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.SecureRandom;
+
 /**
  * 在pom中放开maven-jar-plugin和maven-assembly-plugin两个plugin的注释
  * maven打包：mvn package -Dmaven.test.skip=true
- *
+ * <p/>
  * 需要连续运行24小时，看http连接释放情况，rsync调用情况
- *    http连接情况  /usr/sbin/lsof -p 16786 |grep TCP|wc -l
- * @author Bingoo
+ * http连接情况  /usr/sbin/lsof -p 16786 |grep TCP|wc -l
  *
+ * @author Bingoo
  */
 public class PageStaticDemo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         RsyncCompleteListener rsyncCompleteListener = new RsyncCompleteListenerDemo();
         // 配置上传相关参数
-        /*PageStatic pageStatic =*/ new PageStaticBuilder()
+        /*PageStatic pageStatic =*/
+        new PageStaticBuilder()
                 // 必须有一个addRsyncRemote和一个addRsyncDir
                 .addRsyncRemote("10.142.151.86", "mall")
                 .addRsyncRemote("10.142.151.87", "mall")
                 .addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.86:/home/mall/pagestatic/")
                 .addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.87:/app/mallci/pagestatic/")
-                // 以下是可选参数
+                        // 以下是可选参数
                 .httpSocketTimeoutSeconds(60) // 不设置，默认30秒
                 .triggerUploadWhenMaxFiles(100) // 不设置，默认100
                 .triggerUploadWhenMaxSeconds(60) // 不设置，默认120
@@ -39,8 +41,8 @@ public class PageStaticDemo {
                 .build();
 
         // 参数配置请参见pagestatic.ini配置说明文件。
-        PageStatic pageStatic = new PageStaticBuilder()
-            .fromSpec("DEFAULT").build();
+        String pageStaticSpec = PageStaticUtils.classResourceToString("org/n3r/biz/pagestatic/pagestatic.conf");
+        PageStatic pageStatic = new PageStaticBuilder().fromSpec(pageStaticSpec).build();
 
         SecureRandom random = new SecureRandom();
         File file = new File("stop");
