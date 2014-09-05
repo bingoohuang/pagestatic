@@ -29,7 +29,8 @@ public class PageStaticDemo {
                 .addRsyncRemote("10.142.151.87", "mall")
                 .addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.86:/home/mall/pagestatic/")
                 .addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.87:/app/mallci/pagestatic/")
-                        // 以下是可选参数
+
+                // 以下是可选参数
                 .httpSocketTimeoutSeconds(60) // 不设置，默认30秒
                 .triggerUploadWhenMaxFiles(100) // 不设置，默认100
                 .triggerUploadWhenMaxSeconds(60) // 不设置，默认120
@@ -41,7 +42,7 @@ public class PageStaticDemo {
                 .build();
 
         // 参数配置请参见pagestatic.ini配置说明文件。
-        String pageStaticSpec = PageStaticUtils.classResourceToString("org/n3r/biz/pagestatic/pagestatic.conf");
+        String pageStaticSpec = PageStaticUtils.classResourceToString("pagestatic.conf");
         PageStatic pageStatic = new PageStaticBuilder().fromSpec(pageStaticSpec).build();
 
         SecureRandom random = new SecureRandom();

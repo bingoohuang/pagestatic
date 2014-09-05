@@ -22,7 +22,7 @@ import org.slf4j.Logger;
  * Staticize a page content retrieved from an URL and uploaded by rsync.
  * @author Bingoo
  *
- * 2013年07月05日 Bingoo v0.3.5 增强 Rsync命令调用完成后日志输出增加当前用户显示(经常做rsync互信的用户不是启动程序的用户)。
+ * 2013年07月05日 Bingoo v0.3.5 增强 Rsync命令调用完成后日志输出增加当前用户显示(有可能做rsync互信的用户不是启动程序的用户)。
  * 2013年05月29日 Bingoo v0.3.4 增强 支持已有独立文件或者目录的上传。
  * 2013年01月24日 Bingoo v0.3.3 增强 修复多线程下载内容可能混淆的BUG；修正HttpClient MaxConnectionPerHost参数设置。
  * 2013年01月19日 Bingoo v0.3.2 增强 定时上传修正为在第一个文件生成时开始计时；检查本地是否有未上传文件时不计算总数。
