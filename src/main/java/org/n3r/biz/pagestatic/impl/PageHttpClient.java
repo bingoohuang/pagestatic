@@ -11,6 +11,7 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.biz.pagestatic.HttpReqHeader;
 import org.n3r.biz.pagestatic.base.HttpClientCompleteListener;
 import org.n3r.biz.pagestatic.base.HttpClientSyncCompleteListener;
 import org.n3r.biz.pagestatic.util.PageStaticUtils;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -72,13 +74,11 @@ public class PageHttpClient {
 
     public void shutdown() {
         connectionManager.shutdown();
-        if (syncExecutor != null) {
-            syncExecutor.shutdown();
-        }
+        if (syncExecutor != null) syncExecutor.shutdown();
     }
 
     // 本方法是多线程调用，一定要注意线程安全性。
-    public boolean executeGetMethod(String url, Object[] callbackParams, String localFileName) {
+    public boolean executeGetMethod(String url, Object[] params, String localFileName) {
         GetMethod getMethod = null;
         Exception ex = null;
         int statusCode = 0;
@@ -86,6 +86,8 @@ public class PageHttpClient {
 
         try {
             getMethod = new GetMethod(url);
+            addHeaders(getMethod, params);
+
             long startMillis = System.currentTimeMillis();
             log.info("content get begin {} ", url);
             statusCode = httpClient.executeMethod(getMethod);
@@ -96,11 +98,10 @@ public class PageHttpClient {
                 log.info("content get successful {}, costs {} seconds", url, costsMillis);
             }
 
-            File content = PageStaticUtils.createTmpFile(log, tempDir, url, localFileName,
-                    getMethod.getResponseBodyAsStream());
-            if (content == null) {
-                return false;
-            }
+            InputStream response = getMethod.getResponseBodyAsStream();
+            File content = PageStaticUtils.createTmpFile(log, tempDir, url, localFileName, response);
+            if (content == null) return false;
+
             contentTL.set(content);
         } catch (HttpException e) {
             ex = e;
@@ -110,17 +111,24 @@ public class PageHttpClient {
             log.error("{} IOException {}", url, e.getMessage());
         } catch (Exception e) {
             ex = e;
-            log.error("{} exception {}", url, e);
+            log.error("{} exception {}", url, e.getMessage());
         } finally {
-            if (getMethod != null) {
-                getMethod.releaseConnection();
-            }
+            if (getMethod != null) getMethod.releaseConnection();
         }
 
-        return callListener(callbackParams, ex, statusCode, costsMillis);
+        return callListener(params, ex, statusCode, costsMillis);
     }
 
-    private boolean callListener(final Object[] callbackParams, final Exception ex,
+    private void addHeaders(GetMethod getMethod, Object[] callbackParams) {
+        for (Object object : callbackParams) {
+            if (object instanceof HttpReqHeader) {
+                HttpReqHeader header = (HttpReqHeader) object;
+                getMethod.addRequestHeader(header.getName(), header.getValue());
+            }
+        }
+    }
+
+    private boolean callListener(final Object[] params, final Exception ex,
                                  final int statusCode, final double costsMillis) {
         Exception exp = ex;
         try {
@@ -129,7 +137,7 @@ public class PageHttpClient {
                     @Override
                     public void run() {
                         httpClientCompleteListener.onComplete(
-                                ex, statusCode, contentTL.get(), costsMillis, callbackParams);
+                                ex, statusCode, contentTL.get(), costsMillis, params);
                     }
                 });
             }

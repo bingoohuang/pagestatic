@@ -30,7 +30,7 @@ public class PageStaticDemo {
                 .addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.86:/home/mall/pagestatic/")
                 .addRsyncDir("/home/mall/pagestatic/pagehtml/", "10.142.151.87:/app/mallci/pagestatic/")
 
-                // 以下是可选参数
+                        // 以下是可选参数
                 .httpSocketTimeoutSeconds(60) // 不设置，默认30秒
                 .triggerUploadWhenMaxFiles(100) // 不设置，默认100
                 .triggerUploadWhenMaxSeconds(60) // 不设置，默认120
@@ -68,6 +68,8 @@ public class PageStaticDemo {
         // 开始上传
         pageStatic.startupBatch();
 
+        HttpReqHeader httpReqHeader = new HttpReqHeader("X-Requested-With", "XMLHttpRequest");
+
         // 批量上传
         for (int i = 0, ii = urls.length; i < ii; ++i) {
             String url = urls[i];
@@ -75,7 +77,7 @@ public class PageStaticDemo {
             String localFile = "/home/mall/pagestatic/pagehtml/p" + i % 2 + "/" + fileName;
 
             // 静态化指定url，以及对应本地文件名称
-            pageStatic.urlStaticAndUpload(url, localFile);
+            pageStatic.urlStaticAndUpload(url, localFile, httpReqHeader);
             // 直接给定静态化内容进行上传
             String content = "<html>我是静态内容</html>";
             localFile = "/home/mall/pagestatic/pagehtml/p" + i % 2 + "/direct" + fileName;
@@ -87,32 +89,6 @@ public class PageStaticDemo {
     }
 
     private static String[] urls = {
-            "http://10.142.151.86:8105/goodsdetail/341211200803.html",
-            "http://10.142.151.86:8105/goodsdetail/341207022503.html",
-            "http://10.142.151.86:8105/goodsdetail/341208074455.html",
-            "http://10.142.151.86:8105/goodsdetail/341210259313.html",
-            "http://10.142.151.86:8105/goodsdetail/341211210958.html",
-            "http://10.142.151.86:8105/goodsdetail/341211200851.html",
-            "http://10.142.151.86:8105/goodsdetail/341211190701.html",
-            "http://10.142.151.86:8105/goodsdetail/341207022503.html",
-            "http://10.142.151.86:8105/goodsdetail/341210259313.html",
-            "http://10.142.151.86:8105/goodsdetail/341208074455.html",
-            "http://10.142.151.86:8105/goodsdetail/341209106504.html",
-            "http://10.142.151.86:8105/goodsdetail/341209106505.html",
-            "http://10.142.151.86:8105/goodsdetail/341209076408.html",
-            "http://10.142.151.86:8105/goodsdetail/341210228903.html",
-            "http://10.142.151.86:8105/goodsdetail/341209187201.html",
-            "http://10.142.151.86:8105/goodsdetail/341209187204.html",
-            "http://10.142.151.86:8105/goodsdetail/341209187205.html",
-            "http://10.142.151.86:8105/goodsdetail/341210098301.html",
-            "http://10.142.151.86:8105/goodsdetail/341211190701.html",
-            "http://10.142.151.86:8105/goodsdetail/341209298001.html",
-            "http://10.142.151.86:8105/goodsdetail/341210299505.html",
-            "http://10.142.151.86:8105/goodsdetail/341210299506.html",
-            "http://10.142.151.86:8105/goodsdetail/341210299507.html",
-            "http://10.142.151.86:8105/goodsdetail/341209257501.html",
-            "http://10.142.151.86:8105/goodsdetail/341209257504.html",
-            "http://10.142.151.86:8105/goodsdetail/341208305801.html",
             "http://10.142.151.86:8105/goodsdetail/341211150601.html"
     };
 }
