@@ -67,8 +67,8 @@ public class PageHttpClient {
 
         if (httpClientCompleteListener != null) {
             syncExecutor = httpClientCompleteListener instanceof HttpClientSyncCompleteListener
-                    ? Executors.newSingleThreadExecutor()
-                    : MoreExecutors.sameThreadExecutor();
+                    ? MoreExecutors.sameThreadExecutor()
+                    : Executors.newSingleThreadExecutor();
         }
     }
 
@@ -136,8 +136,12 @@ public class PageHttpClient {
                 syncExecutor.submit(new Runnable() {
                     @Override
                     public void run() {
-                        httpClientCompleteListener.onComplete(
-                                ex, statusCode, contentTL.get(), costsMillis, params);
+                        try {
+                            httpClientCompleteListener.onComplete(
+                                    ex, statusCode, contentTL.get(), costsMillis, params);
+                        } catch (Throwable e) {
+                            log.error("onComplete error", e);
+                        }
                     }
                 });
             }

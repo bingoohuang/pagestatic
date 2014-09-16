@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("unchecked")
 public class PageStaticConfig implements Configable {
     private Logger log = LoggerFactory.getLogger(PageStaticConfig.class);
     private HashMap<String, Object> properties = Maps.newHashMap();

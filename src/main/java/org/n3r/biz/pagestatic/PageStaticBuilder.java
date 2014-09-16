@@ -2,6 +2,7 @@ package org.n3r.biz.pagestatic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.biz.pagestatic.base.HttpClientCompleteListener;
@@ -74,8 +75,8 @@ public class PageStaticBuilder {
         return new PageStatic(this);
     }
 
-    public PageStaticBuilder fromSpec(String specName) {
-        new PageStaticSpecParser(specName).parse(this);
+    public PageStaticBuilder fromSpec(String specConfig) {
+        new PageStaticSpecParser(specConfig).parse(this);
         return this;
     }
 
