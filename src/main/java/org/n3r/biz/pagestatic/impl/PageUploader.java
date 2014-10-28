@@ -54,11 +54,11 @@ public class PageUploader {
             if (pageService.isTerminated()) break;
         }
 
-        log.info("page uploader going to shutdown!");
+        log.info("page uploader is going to shut down!");
 
         pageRsync.rsync(uploadTrigger);
         pageService.shutdown();
-        log.info("page uploader shutted down after processed {} files with {} seconds!",
+        log.info("page uploader shut down after processed {} files with {} seconds!",
                 uploadTrigger.getTotalFileCounting(), uploadTrigger.getTotalCostSeconds());
     }
 
