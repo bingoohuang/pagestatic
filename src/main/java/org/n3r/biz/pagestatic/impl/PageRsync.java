@@ -52,7 +52,7 @@ public class PageRsync {
     }
 
     private boolean hasUnrsyncedFiles() {
-        if (!deleteLocalDirAfterRsync) return false;
+        if (deleteLocalDirAfterRsync) return false;
 
         return PageStaticUtils.hasFiles(localDirs);
     }
@@ -74,7 +74,7 @@ public class PageRsync {
 
     public void rsync(PageUploadTrigger uploadTrigger) {
         // 没有文件上传并且本地没有未同步的文件时，不调用rsync命令
-        if (uploadTrigger.getFileCounting() <= 0 && hasUnrsyncedFiles()) return;
+        if (uploadTrigger.getFileCounting() <= 0 && !hasUnrsyncedFiles()) return;
 
         startAndWaitRsync();
         retryFailedRsyncs(); // 重试失败的rsync
