@@ -1,6 +1,8 @@
 package org.n3r.biz.pagestatic.spec;
 
 
+import lombok.val;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +27,10 @@ public class SpecParser {
     public static Spec[] parseSpecs(String specs) {
         char[] chars = specs.toCharArray();
         SpecState specState = SpecState.SpecClose;
-        StringBuilder name = new StringBuilder();
-        StringBuilder param = new StringBuilder();
+        val name = new StringBuilder();
+        val param = new StringBuilder();
         ParamQuoteState paramQuoteState = ParamQuoteState.None;
-        ArrayList<Spec> specsDefs = new ArrayList<Spec>();
+        val specsDefs = new ArrayList<Spec>();
         Spec spec = null;
         int i = 0;
         char ch = ' ';
@@ -107,8 +109,7 @@ public class SpecParser {
                         default:
                             if (paramQuoteState == ParamQuoteState.Right) {
                                 if (!isWhitespace(ch)) error(specs, i, ch);
-                            }
-                            else param.append(ch);
+                            } else param.append(ch);
                     }
                     break;
                 default:
@@ -182,7 +183,7 @@ public class SpecParser {
         return aChar;
     }
 
-    private static enum SpecState {SpecOpen, SpecName, ParamOpen, ParamValue, SpecClose}
+    private enum SpecState {SpecOpen, SpecName, ParamOpen, ParamValue, SpecClose}
 
-    private static enum ParamQuoteState {None, Left, Right}
+    private enum ParamQuoteState {None, Left, Right}
 }

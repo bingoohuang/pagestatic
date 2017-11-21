@@ -1,23 +1,24 @@
 package org.n3r.biz.pagestatic.impl;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-
+import lombok.Setter;
 import org.n3r.biz.pagestatic.base.PageService;
 import org.n3r.biz.pagestatic.bean.Page;
 import org.n3r.biz.pagestatic.util.PageStaticUtils;
 import org.slf4j.Logger;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 页面文件生成与上传类。
- * @author Bingoo
  *
+ * @author Bingoo
  */
 public class PageUploader {
     private Logger log;
 
-    private BlockingQueue<Page> pageQueue;
-    private PageService pageService;
+    @Setter private BlockingQueue<Page> pageQueue;
+    @Setter private PageService pageService;
     private PageUploadTrigger uploadTrigger = new PageUploadTrigger();
 
     private PageRsync pageRsync;
@@ -35,8 +36,7 @@ public class PageUploader {
             public void run() {
                 try {
                     createFileAndRsyncUpload();
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     log.error("createFileAndRsyncUpload has an error!", ex);
                 }
             }
@@ -49,7 +49,7 @@ public class PageUploader {
         while (true) {
             checkUploadTriggered();
 
-            while (pollQueueAndCreateFile());
+            while (pollQueueAndCreateFile()) ;
 
             if (pageService.isTerminated()) break;
         }
@@ -68,7 +68,7 @@ public class PageUploader {
         pageRsync.rsync(uploadTrigger);
     }
 
-    private boolean pollQueueAndCreateFile()  {
+    private boolean pollQueueAndCreateFile() {
         Page page = pollQueue();
         if (page == null) return false;
 
@@ -78,7 +78,7 @@ public class PageUploader {
         return true;
     }
 
-    private Page pollQueue()  {
+    private Page pollQueue() {
         try {
             return pageQueue.poll(1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -87,19 +87,11 @@ public class PageUploader {
         }
     }
 
-    public void setPageQueue(BlockingQueue<Page> pageQueue) {
-        this.pageQueue = pageQueue;
-    }
-
     public void setUploadTriggerMaxFiles(int uploadTriggerMaxFiles) {
         uploadTrigger.setUploadTriggerMaxFiles(uploadTriggerMaxFiles);
     }
 
     public void setUploadTriggerMaxSeconds(int uploadTriggerMaxSeconds) {
         uploadTrigger.setUploadTriggerMaxSeconds(uploadTriggerMaxSeconds);
-    }
-
-    public void setPageService(PageService pageService) {
-        this.pageService = pageService;
     }
 }

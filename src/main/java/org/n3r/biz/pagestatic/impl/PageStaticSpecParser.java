@@ -1,13 +1,13 @@
 package org.n3r.biz.pagestatic.impl;
 
+import lombok.AllArgsConstructor;
+import lombok.val;
 import org.n3r.biz.pagestatic.PageStaticBuilder;
 import org.n3r.biz.pagestatic.base.HttpClientCompleteListener;
 import org.n3r.biz.pagestatic.base.RsyncCompleteListener;
 import org.n3r.biz.pagestatic.config.Configable;
 import org.n3r.biz.pagestatic.config.PageStaticConfig;
 import org.n3r.biz.pagestatic.spec.Specs;
-
-import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
@@ -16,15 +16,12 @@ import static org.apache.commons.lang3.StringUtils.*;
  *
  * @author Bingoo
  */
+@AllArgsConstructor
 public class PageStaticSpecParser {
-    private String config;
-
-    public PageStaticSpecParser(String config) {
-        this.config = config;
-    }
+    private final String config;
 
     public void parse(PageStaticBuilder pageStaticBuilder) {
-        Configable config = new PageStaticConfig(this.config);
+        val config = new PageStaticConfig(this.config);
 
         parseRsyncRemote(pageStaticBuilder, config);
         parseRsyncDir(pageStaticBuilder, config);
@@ -46,119 +43,117 @@ public class PageStaticSpecParser {
     }
 
     private void rsyncRetryTimes(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "rsyncRetryTimes";
+        val key = "rsyncRetryTimes";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.rsyncRetryTimes(config.getInt(key));
     }
 
     private void httpCompleteListener(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "httpClientCompleteListener";
+        val key = "httpClientCompleteListener";
         if (!config.exists(key)) return;
 
-        List<HttpClientCompleteListener> listeners = Specs.newObjects(
-                config.getStr(key), HttpClientCompleteListener.class);
+        val listeners = Specs.newObjects(config.getStr(key), HttpClientCompleteListener.class);
         if (listeners.size() > 0)
             pageStaticBuilder.httpClientCompleteListener(listeners.get(0));
     }
 
     private void rsyncCompleteListener(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "rsyncCompleteListener";
+        val key = "rsyncCompleteListener";
         if (!config.exists(key)) return;
 
-        List<RsyncCompleteListener> listeners = Specs.newObjects(
-                config.getStr(key), RsyncCompleteListener.class);
+        val listeners = Specs.newObjects(config.getStr(key), RsyncCompleteListener.class);
         if (listeners.size() > 0)
             pageStaticBuilder.rsyncCompleteListener(listeners.get(0));
     }
 
     private void httpSocketTimeoutSeconds(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "httpSocketTimeoutSeconds";
+        val key = "httpSocketTimeoutSeconds";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.httpSocketTimeoutSeconds(config.getInt(key));
     }
 
     private void httpProxy(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "httpProxy";
+        val key = "httpProxy";
         if (!config.exists(key)) return;
 
-        String httpProxy = config.getStr(key);
-        String proxyHost = trim(substringBefore(httpProxy, ","));
-        String proxyPort = trim(substringAfter(httpProxy, ","));
+        val httpProxy = config.getStr(key);
+        val proxyHost = trim(substringBefore(httpProxy, ","));
+        val proxyPort = trim(substringAfter(httpProxy, ","));
         pageStaticBuilder.httpProxy(proxyHost, Integer.valueOf(proxyPort));
     }
 
     private void logger(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "logger";
+        val key = "logger";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.logger(config.getStr(key));
     }
 
     private void tempDir(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "tempDir";
+        val key = "tempDir";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.tempDir(config.getStr(key));
     }
 
     private void triggerUploadWhenMaxFiles(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "triggerUploadWhenMaxFiles";
+        val key = "triggerUploadWhenMaxFiles";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.triggerUploadWhenMaxFiles(config.getInt(key));
     }
 
     private void triggerUploadWhenMaxSeconds(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "triggerUploadWhenMaxSeconds";
+        val key = "triggerUploadWhenMaxSeconds";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.triggerUploadWhenMaxSeconds(config.getInt(key));
     }
 
     private void deleteLocalDirAfterRsync(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "deleteLocalDirAfterRsync";
+        val key = "deleteLocalDirAfterRsync";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.deleteLocalDirAfterRsync(config.getBool(key));
     }
 
     private void maxUrlContentGeneratingThreads(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "maxUrlContentGeneratingThreads";
+        val key = "maxUrlContentGeneratingThreads";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.maxUrlContentGeneratingThreads(config.getInt(key));
     }
 
     private void rsyncTimeoutSeconds(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "rsyncTimeoutSeconds";
+        val key = "rsyncTimeoutSeconds";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.rsyncTimeoutSeconds(config.getInt(key));
     }
 
     private void rsyncOptions(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "rsyncOptions";
+        val key = "rsyncOptions";
         if (!config.exists(key)) return;
 
         pageStaticBuilder.rsyncOptions(config.getStr(key));
     }
 
     private void parseRsyncRemote(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "addRsyncRemote";
-        List<String> remotes = config.getList(key);
-        for (Object value : remotes) {
-            String rsyncRemote = (String) value;
+        val key = "addRsyncRemote";
+        val remotes = config.getList(key);
+        for (val value : remotes) {
+            val rsyncRemote = value;
             addRsyncRemote(pageStaticBuilder, rsyncRemote);
         }
     }
 
     private void parseRsyncDir(PageStaticBuilder pageStaticBuilder, Configable config) {
-        String key = "addRsyncDir";
-        List<String> remotes = config.getList(key);
-        for (Object value : remotes) {
-            String rsyncDir = (String) value;
+        val key = "addRsyncDir";
+        val remotes = config.getList(key);
+        for (val value : remotes) {
+            String rsyncDir = value;
             addRsyncDir(pageStaticBuilder, rsyncDir);
         }
     }
@@ -166,16 +161,16 @@ public class PageStaticSpecParser {
     private void addRsyncRemote(PageStaticBuilder pageStaticBuilder, String rsyncRemote) {
         if (isEmpty(rsyncRemote)) return;
 
-        String remoteHost = trim(substringBefore(rsyncRemote, ","));
-        String remoteUser = trim(substringAfter(rsyncRemote, ","));
+        val remoteHost = trim(substringBefore(rsyncRemote, ","));
+        val remoteUser = trim(substringAfter(rsyncRemote, ","));
         pageStaticBuilder.addRsyncRemote(remoteHost, remoteUser);
     }
 
     private void addRsyncDir(PageStaticBuilder pageStaticBuilder, String rsyncDir) {
         if (isEmpty(rsyncDir)) return;
 
-        String localDir = trim(substringBefore(rsyncDir, ","));
-        String remoteDir = trim(substringAfter(rsyncDir, ","));
+        val localDir = trim(substringBefore(rsyncDir, ","));
+        val remoteDir = trim(substringAfter(rsyncDir, ","));
         pageStaticBuilder.addRsyncDir(localDir, remoteDir);
     }
 }

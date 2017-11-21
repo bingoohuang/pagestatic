@@ -1,26 +1,10 @@
 package org.n3r.biz.pagestatic.bean;
 
+import lombok.Value;
+
+@Value
 public class RsyncConf {
-    private String destIp;
-    private String destUser;
-    private String destPass;
-
-    public RsyncConf(String destIp, String destUser, String destPass) {
-        this.destIp = destIp;
-        this.destUser = destUser;
-        this.destPass = destPass;
-    }
-
-    public String getDestIp() {
-        return destIp;
-    }
-
-    public String getDestUser() {
-        return destUser;
-    }
-
-    public String getDestPass() {
-        return destPass;
-    }
-
+    private final String destIp;
+    private final String destUser;
+    private final String destPass;
 }

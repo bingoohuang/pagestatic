@@ -1,8 +1,6 @@
 package org.n3r.biz.pagestatic.impl;
 
-import java.io.File;
-import java.io.IOException;
-
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.biz.pagestatic.bean.RsyncDir;
 import org.n3r.biz.pagestatic.bean.RsyncRemote;
@@ -11,10 +9,13 @@ import org.n3r.biz.pagestatic.util.PageStaticUtils;
 import org.n3r.biz.pagestatic.util.StreamGobbler;
 import org.slf4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * 单条rsync命令类。
- * @author Bingoo
  *
+ * @author Bingoo
  */
 public class PageRsyncCmd {
     private Logger log;
@@ -38,15 +39,15 @@ public class PageRsyncCmd {
         this.conf = conf;
         this.dir = dir;
 
-        String[] cmd = new String[] { "rsync", pageRsync.getRsyncOptions(), dir.getLocalDir(), createRemotePath() };
+        val cmd = new String[]{"rsync", pageRsync.getRsyncOptions(), dir.getLocalDir(), createRemotePath()};
         commandLine = StringUtils.join(cmd, ' ');
         processBuilder = new ProcessBuilder(cmd);
     }
 
     private String createRemotePath() {
         return new StringBuilder()
-                .append(conf.getDestUser()).append('@')
-                .append(conf.getDestHost()).append(':')
+                .append(conf.getRemoteUser()).append('@')
+                .append(conf.getRemoteHost()).append(':')
                 .append(dir.getRemoteDir())
                 .toString();
     }
@@ -85,6 +86,7 @@ public class PageRsyncCmd {
 
     /**
      * Destroy process if expired.
+     *
      * @param rysncTimeoutMilis
      * @return whether process was tagged as terminated just now.
      */
@@ -93,7 +95,7 @@ public class PageRsyncCmd {
 
         // log.info("check {} was terminated or not after {} second(s)", commandLine, millisOfCheckRsyncExited / 1000.);
         if (PageStaticUtils.isAlive(process)) {
-            long cost = System.currentTimeMillis() - startMillis;
+            val cost = System.currentTimeMillis() - startMillis;
             if (cost > rysncTimeoutMilis) {
                 costMillis = cost;
                 log.warn("{} exipred in {}s , kill it.", commandLine, cost / 1000.);
@@ -108,8 +110,8 @@ public class PageRsyncCmd {
         aliveFlag = false;
         exitValue = process.exitValue();
         log.info("{}: {} exited with value {}, cost {} seconds",
-                new Object[] {getLoginUser(), commandLine, exitValue,
-                        (System.currentTimeMillis() - startMillis) / 1000. });
+                new Object[]{getLoginUser(), commandLine, exitValue,
+                        (System.currentTimeMillis() - startMillis) / 1000.});
 
         pageRsync.rsyncFailListenerCall(this, stdoutStreamGobbler.getOutput(), stderrStreamGobbler.getOutput());
 

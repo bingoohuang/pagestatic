@@ -3,37 +3,36 @@ package org.n3r.biz.pagestatic.config;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("unchecked")
+
+@Slf4j
 public class PageStaticConfig implements Configable {
-    private Logger log = LoggerFactory.getLogger(PageStaticConfig.class);
     private HashMap<String, Object> properties = Maps.newHashMap();
 
     public PageStaticConfig(String pageStaticSpec) {
         if (StringUtils.isEmpty(pageStaticSpec)) return;
 
-        Iterable<String> lines = Splitter.on('\n').trimResults().omitEmptyStrings()
+        val lines = Splitter.on('\n').trimResults().omitEmptyStrings()
                 .split(pageStaticSpec);
 
-        for (String line : lines) {
+        for (val line : lines) {
             if (line.startsWith("#")) continue;
             if (line.startsWith("//")) continue;
 
-            int leftBracePos = line.indexOf('(');
+            val leftBracePos = line.indexOf('(');
             if (leftBracePos > 0) {
                 int rightBracePos = line.indexOf(')');
                 if (rightBracePos > leftBracePos) {
-                    String key = line.substring(0, leftBracePos).trim();
-                    String value = StringUtils.trim(StringUtils.substringBetween(line, "(", ")"));
+                    val key = line.substring(0, leftBracePos).trim();
+                    val value = StringUtils.trim(StringUtils.substringBetween(line, "(", ")"));
                     put(key, value);
                 } else {
                     log.warn("line {} found unmatched brace", line);
@@ -42,13 +41,13 @@ public class PageStaticConfig implements Configable {
                 continue;
             }
 
-            int leftEqual = line.indexOf('=');
+            val leftEqual = line.indexOf('=');
             if (leftEqual > 0) {
                 pareKeyValue(line, leftEqual);
                 continue;
             }
 
-            int leftColon = line.indexOf(':');
+            val leftColon = line.indexOf(':');
             if (leftColon > 0) {
                 pareKeyValue(line, leftColon);
                 continue;
@@ -59,13 +58,13 @@ public class PageStaticConfig implements Configable {
     }
 
     private void pareKeyValue(String line, int leftEqual) {
-        String key = line.substring(0, leftEqual).trim();
-        String value = StringUtils.trim(StringUtils.substring(line, leftEqual + 1));
+        val key = line.substring(0, leftEqual).trim();
+        val value = StringUtils.trim(StringUtils.substring(line, leftEqual + 1));
         put(key, value);
     }
 
     private void put(String key, String value) {
-        Object existsValue = properties.get(key);
+        val existsValue = properties.get(key);
         if (existsValue == null) {
             properties.put(key, value);
             return;
@@ -92,12 +91,12 @@ public class PageStaticConfig implements Configable {
         if (!exists(key))
             throw new RuntimeException(key + " not found in config system");
 
-        String str = getStr(key);
-        Matcher matcher = numberPattern.matcher(str);
+        val str = getStr(key);
+        val matcher = numberPattern.matcher(str);
         if (!matcher.matches())
             throw new RuntimeException(key + "'s value [" + str + "] is not an int");
 
-        String intStr = StringUtils.substringBefore(matcher.group(1), ".");
+        val intStr = StringUtils.substringBefore(matcher.group(1), ".");
         if (StringUtils.isEmpty(intStr))
             return 0;
 
@@ -106,7 +105,7 @@ public class PageStaticConfig implements Configable {
 
     @Override
     public String getStr(String key) {
-        Object value = properties.get(key);
+        val value = properties.get(key);
         return value == null ? null : value.toString();
     }
 
@@ -120,7 +119,7 @@ public class PageStaticConfig implements Configable {
 
     @Override
     public List<String> getList(String key) {
-        Object value = properties.get(key);
+        val value = properties.get(key);
         if (value == null) return Collections.emptyList();
 
         return value instanceof List ? (List<String>) value

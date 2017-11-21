@@ -1,6 +1,8 @@
 package org.n3r.biz.pagestatic.impl;
 
 import com.google.common.util.concurrent.MoreExecutors;
+import lombok.Setter;
+import lombok.val;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
@@ -19,7 +21,6 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -35,25 +36,25 @@ public class PageHttpClient {
     private MultiThreadedHttpConnectionManager connectionManager;
     private HttpClient httpClient;
     private ThreadLocal<File> contentTL = new ThreadLocal<File>();
-    private int httpSocketTimeoutSeconds;
-    private HttpClientCompleteListener httpClientCompleteListener;
+    @Setter private int httpSocketTimeoutSeconds;
+    @Setter private HttpClientCompleteListener httpClientCompleteListener;
     private volatile ExecutorService syncExecutor = null;
-    private File tempDir;
+    @Setter private File tempDir;
 
-    private String proxyHost;
-    private int proxyPort;
+    @Setter private String proxyHost;
+    @Setter private int proxyPort;
 
-    private int maxGeneratingThreads;
+    @Setter private int maxGeneratingThreads;
 
     public PageHttpClient(Logger log) {
         this.log = log;
     }
 
     public void startup() {
-        HttpClientParams params = new HttpClientParams();
+        val params = new HttpClientParams();
         params.setParameter(HttpMethodParams.SO_TIMEOUT, httpSocketTimeoutSeconds * 1000);
         params.setParameter(HttpMethodParams.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
-        HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
+        val httpConnectionManagerParams = new HttpConnectionManagerParams();
         httpConnectionManagerParams.setDefaultMaxConnectionsPerHost(maxGeneratingThreads); // 默认2
         httpConnectionManagerParams.setMaxTotalConnections(maxGeneratingThreads); // 默认20
 
@@ -88,7 +89,7 @@ public class PageHttpClient {
             getMethod = new GetMethod(url);
             addHeaders(getMethod, params);
 
-            long startMillis = System.currentTimeMillis();
+            val startMillis = System.currentTimeMillis();
             log.info("content get begin {} ", url);
             statusCode = httpClient.executeMethod(getMethod);
             costsMillis = (System.currentTimeMillis() - startMillis) / 1000.;
@@ -98,8 +99,8 @@ public class PageHttpClient {
                 log.info("content get successful {}, costs {} seconds", url, costsMillis);
             }
 
-            InputStream response = getMethod.getResponseBodyAsStream();
-            File content = PageStaticUtils.createTmpFile(log, tempDir, url, localFileName, response);
+            val response = getMethod.getResponseBodyAsStream();
+            val content = PageStaticUtils.createTmpFile(log, tempDir, url, localFileName, response);
             if (content == null) return false;
 
             contentTL.set(content);
@@ -120,9 +121,9 @@ public class PageHttpClient {
     }
 
     private void addHeaders(GetMethod getMethod, Object[] callbackParams) {
-        for (Object object : callbackParams) {
+        for (val object : callbackParams) {
             if (object instanceof HttpReqHeader) {
-                HttpReqHeader header = (HttpReqHeader) object;
+                val header = (HttpReqHeader) object;
                 getMethod.addRequestHeader(header.getName(), header.getValue());
             }
         }
@@ -155,30 +156,6 @@ public class PageHttpClient {
 
     public File getContent() {
         return contentTL.get();
-    }
-
-    public void setHttpSocketTimeoutSeconds(int httpSocketTimeoutSeconds) {
-        this.httpSocketTimeoutSeconds = httpSocketTimeoutSeconds;
-    }
-
-    public void setHttpClientCompleteListener(HttpClientCompleteListener httpClientCompleteListener) {
-        this.httpClientCompleteListener = httpClientCompleteListener;
-    }
-
-    public void setTempDir(File tempDir) {
-        this.tempDir = tempDir;
-    }
-
-    public void setProxyHost(String proxyHost) {
-        this.proxyHost = proxyHost;
-    }
-
-    public void setProxyPort(int proxyPort) {
-        this.proxyPort = proxyPort;
-    }
-
-    public void setMaxGeneratingThreads(int maxGeneratingThreads) {
-        this.maxGeneratingThreads = maxGeneratingThreads;
     }
 
 }

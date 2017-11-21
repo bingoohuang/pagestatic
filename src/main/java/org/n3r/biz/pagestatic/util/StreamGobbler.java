@@ -1,15 +1,15 @@
 package org.n3r.biz.pagestatic.util;
 
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-
 public class StreamGobbler extends Thread {
-    public static enum TYPE { STDOUT, STDERR }
+    public enum TYPE {STDOUT, STDERR}
 
     private Logger log;
 
@@ -40,7 +40,7 @@ public class StreamGobbler extends Thread {
             br = new BufferedReader(isr);
 
             String line = null;
-            while ((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 outputStr.append(line).append(separator);
 
                 if (type == TYPE.STDOUT)
@@ -50,11 +50,9 @@ public class StreamGobbler extends Thread {
             }
 
             output = outputStr.toString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error("{} ioexception {}", commandLine, e.getMessage());
-        }
-        finally {
+        } finally {
             IOUtils.closeQuietly(isr);
             IOUtils.closeQuietly(br);
         }

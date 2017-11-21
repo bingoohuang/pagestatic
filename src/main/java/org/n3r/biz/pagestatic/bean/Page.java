@@ -1,25 +1,22 @@
 package org.n3r.biz.pagestatic.bean;
 
+import lombok.Value;
+
 import java.io.File;
 
 /**
  * 一个需要静态化并上传的页面.
- * @author Bingoo
  *
+ * @author Bingoo
  */
+@Value
 public class Page {
     // 页面所在的URL
-    private String url;
+    private final String url;
     // 包含Client访问页面URL返回的响应体临时文件名称
-    private File tempFile;
+    private final File tempFile;
     // 响应体所需要存储的本地文件名称
-    private File localFile;
-
-    public Page(String url, File tempFile, File localFile) {
-        this.url = url;
-        this.tempFile = tempFile;
-        this.localFile = localFile;
-    }
+    private final File localFile;
 
     public String getUrl() {
         return url;
